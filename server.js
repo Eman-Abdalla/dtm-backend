@@ -42,7 +42,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
        /** get IDPs states count --Governates */
     app.get("/idps_total_states", (request, response) => {
       const req=request.query
-      con.query('SELECT DISTINCT COUNT(state_admin1) FROM idps_dataset WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT state_admin1) FROM idps_dataset WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -54,7 +54,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
        /** get IDPs states count --Districts */
     app.get("/idps_total_districts", (request, response) => {
       const req=request.query
-      con.query('SELECT DISTINCT COUNT(locality_admin2) FROM idps_dataset WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT locality_admin2) FROM idps_dataset WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -67,7 +67,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
             /** get IDPs location count */
     app.get("/idps_total_locations", (request, response) => {
       const req=request.query
-      con.query('SELECT DISTINCT COUNT(location_admin3) FROM idps_dataset WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT location_admin3) FROM idps_dataset WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -79,7 +79,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
                 /** get returnees location count */
     app.get("/returnees_total_location", (request, response) => {
       const req=request.query
-      con.query('SELECT DISTINCT COUNT(location_admin3) FROM permenant_returnees  WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT location_admin3) FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -91,7 +91,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
                    /** get returnees location count --individuals*/
     app.get("/returnees_count", (request, response) => {
       const req=request.query
-      con.query('SELECT DISTINCT SUM(returnees_ind) FROM permenant_returnees  WHERE 1', (err,rows) => {
+      con.query('SELECT  SUM(DISTINCT returnees_ind) FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -103,7 +103,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
                        /** get returnees location count --Governates */
     app.get("/returnees_states_count", (request, response) => {
       const req=request.query
-      con.query('SELECT DISTINCT COUNT(state_admin1) FROM permenant_returnees  WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT( DISTINCT state_admin1) FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -115,7 +115,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
       /** get returnees states count --districts */
     app.get("/returnees_districts_count", (request, response) => {
       const req=request.query
-      con.query('SELECT DISTINCT COUNT(state_admin2)  FROM foriegn_dataset  WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT locality_admin2)  FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -127,7 +127,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
        /** get returnees states count --Locations  */
     app.get("/returnees_locations_count", (request, response) => {
       const req=request.query
-      con.query('SELECT DISTINCT COUNT(location_admin3)  FROM foriegn_dataset  WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT location_admin3)  FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
