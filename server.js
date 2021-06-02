@@ -113,7 +113,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
       })
 
       /** get returnees states count --districts */
-    app.get("/foriegn_returnees_states_count", (request, response) => {
+    app.get("/returnees_districts_count", (request, response) => {
       const req=request.query
       con.query('SELECT DISTINCT COUNT(state_admin2)  FROM foriegn_dataset  WHERE 1', (err,rows) => {
         if(err) throw err;
@@ -125,7 +125,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
       })
 
        /** get returnees states count --Locations  */
-    app.get("/foriegn_returnees_states_count", (request, response) => {
+    app.get("/returnees_locations_count", (request, response) => {
       const req=request.query
       con.query('SELECT DISTINCT COUNT(location_admin3)  FROM foriegn_dataset  WHERE 1', (err,rows) => {
         if(err) throw err;
@@ -181,11 +181,18 @@ app.get("/foriegn_get-states-location", (request, response) => {
 
 
           /** GET INDIVIDUALS FOR EVERY STATE OR DISTRICT FOR IDPS */
-   app.get("/individuals", (request, response) => {
+   app.get("/idps_individuals", (request, response) => {
     const req=request.query
-    con.query('SELECT DISTINCT (state_admin1), SUM(round_2_ind) FROM idps_dataset GROUP BY (state_admin1)', (err,rows) => {
-      if(err) throw err;
+    con.query('SELECT DISTINCT (state_admin1), SUM(round_2_ind), state_code FROM idps GROUP BY (state_admin1)', function(error, results, fields) {
+      if(error) throw error;
     
+      var rows = JSON.parse(JSON.stringify(results));
+      for(i=0; i<rows.length; i++){
+        if(JSON.stringify(rows[i]['state_admin1']).includes("Blue Nile")){
+
+        }
+      }
+      
       response.json({data:rows})
     
     });
