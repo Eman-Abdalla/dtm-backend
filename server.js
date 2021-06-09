@@ -30,7 +30,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
     /** get IDPs  -- individuals */
     app.get("/idps_total_count", (request, response) => {
       const req=request.query
-      con.query('SELECT SUM(round_2_ind) FROM idps_dataset ', (err,rows) => {
+      con.query('SELECT SUM(round_2_ind) AS idps_total_count FROM idps_dataset ', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -42,7 +42,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
        /** get IDPs states count --Governates */
     app.get("/idps_total_states", (request, response) => {
       const req=request.query
-      con.query('SELECT  COUNT(DISTINCT state_admin1) FROM idps_dataset WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT state_admin1) AS idps_total_states FROM idps_dataset WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -54,7 +54,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
        /** get IDPs states count --Districts */
     app.get("/idps_total_districts", (request, response) => {
       const req=request.query
-      con.query('SELECT  COUNT(DISTINCT locality_admin2) FROM idps_dataset WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT locality_admin2) AS idps_total_districts FROM idps_dataset WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -67,7 +67,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
             /** get IDPs location count */
     app.get("/idps_total_locations", (request, response) => {
       const req=request.query
-      con.query('SELECT  COUNT(DISTINCT location_admin3) FROM idps_dataset WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT location_admin3) AS idps_total_locations FROM idps_dataset WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -79,7 +79,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
                 /** get returnees location count */
     app.get("/returnees_total_location", (request, response) => {
       const req=request.query
-      con.query('SELECT  COUNT(DISTINCT location_admin3) FROM permenant_returnees  WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT location_admin3) AS returnees_total_location FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -91,7 +91,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
                    /** get returnees location count --individuals*/
     app.get("/returnees_count", (request, response) => {
       const req=request.query
-      con.query('SELECT  SUM(DISTINCT returnees_ind) FROM permenant_returnees  WHERE 1', (err,rows) => {
+      con.query('SELECT  SUM(DISTINCT returnees_ind) AS returnees_count FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -103,7 +103,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
                        /** get returnees location count --Governates */
     app.get("/returnees_states_count", (request, response) => {
       const req=request.query
-      con.query('SELECT  COUNT( DISTINCT state_admin1) FROM permenant_returnees  WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT( DISTINCT state_admin1) AS returnees_states_count FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -115,7 +115,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
       /** get returnees states count --districts */
     app.get("/returnees_districts_count", (request, response) => {
       const req=request.query
-      con.query('SELECT  COUNT(DISTINCT locality_admin2)  FROM permenant_returnees  WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT locality_admin2) AS returnees_districts_count FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -127,7 +127,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
        /** get returnees states count --Locations  */
     app.get("/returnees_locations_count", (request, response) => {
       const req=request.query
-      con.query('SELECT  COUNT(DISTINCT location_admin3)  FROM permenant_returnees  WHERE 1', (err,rows) => {
+      con.query('SELECT  COUNT(DISTINCT location_admin3) AS returnees_locations_count FROM permenant_returnees  WHERE 1', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -139,7 +139,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
    /** GET INDIVIDUALS FOR EVERY STATE OR DISTRICT FOR PERMENANT RETURNEES */
    app.get("/permenant_returnees", (request, response) => {
     const req=request.query
-    con.query('SELECT DISTINCT (state_admin1), SUM(returnees_ind) FROM permenant_returnees GROUP BY (state_admin1)', (err,rows) => {
+    con.query('SELECT DISTINCT (state_admin1), SUM(returnees_ind) AS returnees_individuals FROM permenant_returnees GROUP BY (state_admin1)', (err,rows) => {
       if(err) throw err;
     
       response.json({data:rows})
@@ -151,7 +151,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
        /** GET INDIVIDUALS FOR EVERY STATE OR DISTRICT FOR SEASONAL RETURNEES */
    app.get("/seasonal_returnees", (request, response) => {
     const req=request.query
-    con.query('SELECT DISTINCT (state_admin_1), SUM(returnees_ind) FROM seasonal_returnees  GROUP BY (state_admin_1)', (err,rows) => {
+    con.query('SELECT DISTINCT (state_admin_1), SUM(returnees_ind) AS seasonal_returnees_ind   FROM seasonal_returnees  GROUP BY (state_admin_1)', (err,rows) => {
       if(err) throw err;
     
       response.json({data:rows})
@@ -163,7 +163,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
   //      /** GET INDIVIDUALS FOR EVERY STATE OR DISTRICT FOR RETURNEES FROM ABROAD */
    app.get("/abroad_returnees", (request, response) => {
     const req=request.query
-     con.query('SELECT DISTINCT (state_admin1), SUM(returnees_ind) FROM from_abroad  GROUP BY (state_admin1)', (err,rows) => {
+     con.query('SELECT DISTINCT (state_admin1), SUM(returnees_ind) AS abroad_returnees FROM from_abroad  GROUP BY (state_admin1)', (err,rows) => {
        if(err) throw err;
     
        response.json({data:rows})
@@ -183,7 +183,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
           /** GET INDIVIDUALS FOR EVERY STATE OR DISTRICT FOR IDPS */
    app.get("/idps_individuals", (request, response) => {
     const req=request.query
-    con.query('SELECT DISTINCT (state_admin1), SUM(round_2_ind), state_code FROM idps GROUP BY (state_admin1)', function(error, results, fields) {
+    con.query('SELECT DISTINCT (state_admin1), SUM(round_2_ind) AS idps_individuals, state_code FROM idps GROUP BY (state_admin1)', function(error, results, fields) {
       if(error) throw error;
     
       var rows = JSON.parse(JSON.stringify(results));
