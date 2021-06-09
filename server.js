@@ -183,7 +183,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
           /** GET INDIVIDUALS FOR EVERY STATE OR DISTRICT FOR IDPS */
    app.get("/idps_individuals", (request, response) => {
     const req=request.query
-    con.query('SELECT DISTINCT (state_admin1), SUM(round_2_ind) AS idps_individuals, state_code FROM idps GROUP BY (state_admin1)', function(error, results, fields) {
+    con.query('SELECT state_admin1, returnees_ind , state_code FROM idps GROUP BY (state_admin1)', function(error, results, fields) {
       if(error) throw error;
     
       var rows = JSON.parse(JSON.stringify(results));
@@ -198,6 +198,24 @@ app.get("/foriegn_get-states-location", (request, response) => {
     });
     
     })
+
+    app.get("/returnees_individuals", (request, response) => {
+      const req=request.query
+      con.query('SELECT state_admin1, returnees_ind , state_code FROM returnees_ind_view ', function(error, results, fields) {
+        if(error) throw error;
+      
+        var rows = JSON.parse(JSON.stringify(results));
+        for(i=0; i<rows.length; i++){
+          if(JSON.stringify(rows[i]['state_admin1']).includes("Blue Nile")){
+  
+          }
+        }
+        
+        response.json({data:rows})
+      
+      });
+      
+      })
       
 
 
