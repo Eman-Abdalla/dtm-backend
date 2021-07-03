@@ -1,5 +1,10 @@
 const express = require("express");
 var mysql = require('mysql');
+const cors = require('cors');
+var request = require('request');
+const readXlsxFile = require('read-excel-file/node');
+
+var multer  =   require('multer');
 
 var con = mysql.createConnection({
   host: "localhost",
@@ -9,9 +14,17 @@ var con = mysql.createConnection({
 });
 
 const app = express();
+global.__basedir = __dirname;
 
 //define port
 const port=3000;
+//run the application
+var corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors())
+app.options("*", cors())
 console.log("tessstttt  >>>>")
 
 
@@ -79,7 +92,7 @@ app.get("/foriegn_get-states-location", (request, response) => {
        /** get returnees  -- total individuals */
     app.get("/returnees_total_count", (request, response) => {
       const req=request.query
-      con.query('SELECT SUM(returnees_ind) AS returnees_total_count FROM returnees_ind_view ', (err,rows) => {
+      con.query('SELECT SUM(value) AS returnees_total_count FROM returnees_ind_view ', (err,rows) => {
         if(err) throw err;
       
         response.json({data:rows})
@@ -210,58 +223,82 @@ app.get("/", (req, res) => {
 res.json({message:'Root page'})
 
 })
+app.get("/index.html", (req, res) => {
 
-//run the application
+  res.sendFile(__dirname + '/index.html');
+  
+  })
+
+
+
 app.listen(port, () => {
   console.log(`running at port ${port}`);
 });
+
+
 
 con.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
   });
+ 
 
-//   con.query('SELECT DISTINCT (state_admin1), SUM(returnees_ind) FROM permenant_returnees GROUP BY (state_admin1)',function(error, results, fields) {
-//     if(error) {
-//         console.log(error);
-//         return;
-//     }
-//     var rows = JSON.parse(JSON.stringify(results));
-//     var blue_nile = 0;
-//     var central_darfur = 0;
-//     var east_darfur = 0;
-//     var north_darfur = 0;
-//     var south_darfur= 0;
-//     var south_kordufan= 0;
-//     var west_darfur= 0;
-//     var wast_kordufan= 0;
+  app.get("/getPbiAccessToken", (myrequest, res) => {
+    // const req=myrequest.request
+
+    request({
+      headers: {
+        'Content-Type': 'application/form-data'
+      },
+      url: "https://login.microsoftonline.com/1588262d-23fb-43b4-bd6e-bce49c8e6186/oauth2/token",
+      method: "POST",
+      json: true,   // <--Very important!!!,
+      form:  { 
+        grant_type: 'password',
+      scope: 'openid',
+      resource: 'https://analysis.windows.net/powerbi/api',
+      client_id: '370db508-5807-47d2-afa2-ee8e527538d4',
+      username: 'omosman@iom.int',
+      password: 'Admin123========',
+      client_secret: '1Bo.Gvt7~qS~fR~y2roJFUR62VDp.yF8rr'
+    }
+  }, function (error, response, body){
+      // console.log(response);
+      res.json(body)
+  });
+
+ 
+
+    // res.json({message:'Root page'})
     
-//   for (var i = 0; i < rows.length; i++) {
-//       if(JSON.stringify(rows[i]['state_admin1']).includes("Blue Nile")){
-//       blue_nile += rows[i]['SUM(returnees_ind)']
-//       }else if(JSON.stringify(rows[i]['state_admin1']).includes("Central Darfur")){
-//         central_darfur += rows[i]['SUM(returnees_ind)']
-//       }else if(JSON.stringify(rows[i]['state_admin1']).includes("East Darfur")){
-//         east_darfur += rows[i]['SUM(returnees_ind)']
+    });
 
-//       }else if(JSON.stringify(rows[i]['state_admin1']).includes("North Darfur")){
-//         north_darfur += rows[i]['SUM(returnees_ind)']
+    app.get('/index', function(req, res) {
+      res.sendFile('/index.html');
+    });
 
-//       }else if(JSON.stringify(rows[i]['state_admin1']).includes("South Darfur")){
-//         south_darfur += rows[i]['SUM(returnees_ind)']
 
-//       }else if(JSON.stringify(rows[i]['state_admin1']).includes("South Kordofan")){
-//         south_kordufan += rows[i]['SUM(returnees_ind)']
-
-//       }else if(JSON.stringify(rows[i]['state_admin1']).includes("West Darfur")){
-//         west_darfur += rows[i]['SUM(returnees_ind)']
-
-//       }else if(JSON.stringify(rows[i]['state_admin1']).includes("West Kordofan")){
-//         blue_nile += rows[i]['SUM(returnees_ind)']
-
-//       }
+    const storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+         cb(null, __basedir + '/uploads/')
+      },
+      filename: (req, file, cb) => {
+         cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname)
+      }
+    });
+    
+    const upload = multer({storage: storage});
+    var objTest= require("./index.js");
+    
+    // -> Express Upload RestAPIs
+    app.post('/uploadfile', upload.single("uploadfile"), (req, res) =>{
+      objTest.uploadIdps(__basedir + '/uploads/' + req.file.filename);
+      // importExcelData2MySQL(__basedir + '/uploads/' + req.file.filename);
+      res.json({
+            'msg': 'File uploaded/import successfully!', 'file': req.file
+          });
+    });
+    
    
-//   }
-//   console.log("blue nilee>> ",JSON.stringify(blue_nile))
     
-// });
+  
