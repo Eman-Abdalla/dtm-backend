@@ -259,7 +259,7 @@ con.connect(function(err) {
       resource: 'https://analysis.windows.net/powerbi/api',
       client_id: '370db508-5807-47d2-afa2-ee8e527538d4',
       username: 'omosman@iom.int',
-      password: 'Admin123========',
+      password: 'Admin123==========',
       client_secret: '1Bo.Gvt7~qS~fR~y2roJFUR62VDp.yF8rr'
     }
   }, function (error, response, body){
@@ -283,20 +283,38 @@ con.connect(function(err) {
          cb(null, __basedir + '/uploads/')
       },
       filename: (req, file, cb) => {
-         cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname)
+        console.log("fileIs>> "+ file.fieldname);
+        if(file.fieldname === "idpsfile")
+         cb(null, "idps.xlsx")
+         else if(file.fieldname === "permanent")
+         cb(null, "permanent.xlsx")
+         else console.log("none of them>>>");
       }
     });
     
-    const upload = multer({storage: storage});
+    const upload = multer({storage: storage}).fields([{name: "idpsfile"}, {name: "permanent"}]);;
     var objTest= require("./index.js");
     
     // -> Express Upload RestAPIs
-    app.post('/uploadfile', upload.single("uploadfile"), (req, res) =>{
-      objTest.uploadIdps(__basedir + '/uploads/' + req.file.filename);
+    app.post('/uploadfile', upload, (req, res) =>{
+
+      // console.log("fileRequestIs:: "+ req.files['idpsfile'][0].filename);
+      
+      objTest.uploadIdps(__basedir + '/uploads/' + "permanent.xlsx", "permanent");
+
+
+              objTest.uploadIdps(__basedir + '/uploads/' + "idps.xlsx", "idps");
+
+
+
+        
       // importExcelData2MySQL(__basedir + '/uploads/' + req.file.filename);
       res.json({
-            'msg': 'File uploaded/import successfully!', 'file': req.file
+            'msg': 'File uploaded/import successfully!', 'file': req.files
           });
+
+          // console.log("FileName: "+ req.files.filename);
+
     });
     
    

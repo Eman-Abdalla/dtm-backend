@@ -7,15 +7,31 @@ const express = require('express');
 const readXlsxFile = require('read-excel-file/node');
 const app = express();
 
+// var query;
+
 
 
 // -> Import Excel Data to MySQL database
-var uploadIdps = function importExcelData2MySQL(filePath){
+var uploadIdps = function importExcelData2MySQL(filePath, tableName){
     // File path.
+	console.log("EXPECTED NAME>>>>>"+filePath)
+
+	// if(tableName === "permanent"){
+	// 	console.log('xxxxx'+tableName);
+	// 	query = 'INSERT INTO permenant_returnees VALUES ?';
+
+	// }
+	// else if(tableName === "idps"){
+	// console.log('yyyyyyy'+tableName);
+
+	// query = 'INSERT INTO idps_dataset VALUES ?';
+	// }
+	
+	// if(filePath == "idpsfile-1625942129669-MT-R2(1-IDPsDataset)(1).xlsx")
 	readXlsxFile(filePath).then((rows) => {
 		// `rows` is an array of rows
 		// each row being an array of cells.	 
-		console.log(rows);
+		// console.log(rows);
 	 
 	 
 		// Remove Header ROW
@@ -35,10 +51,12 @@ var uploadIdps = function importExcelData2MySQL(filePath){
 			if (error) {
 				console.error(error);
 			} else {
+				if(tableName === "idps"){
 				let query = 'INSERT INTO idps_dataset VALUES ?';
 				connection.query(query, [rows], (error, response) => {
 				console.log(error || response);
 
+				
 				/**
 				OkPacket {
 				fieldCount: 0,
@@ -51,6 +69,17 @@ var uploadIdps = function importExcelData2MySQL(filePath){
 				changedRows: 0 } 
 				*/
 				});
+			}else if(tableName === "permanent"){
+
+			
+
+				let query2 = 'INSERT INTO permenant_returnees VALUES ?';
+				connection.query(query2, [rows], (error, response) => {
+				console.log(error || response);
+
+			});
+		}
+
 			}
 		});
 	});//read rows
